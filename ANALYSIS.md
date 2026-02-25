@@ -98,3 +98,21 @@ Las clases hacen un uso extensivo de la inyección de dependencias de las variab
 2.  **Enrutamiento:** `DevTools::main_action` determina el área (`packages`, `hooks`, `files`) basándose en `$_REQUEST['area']`.
 3.  **Procesamiento:** Se instancia la clase correspondiente (ej. `DevToolsPackages`). Esta clase interactúa con el sistema de archivos (para leer `package-info.xml`) o con la base de datos (para leer hooks).
 4.  **Salida:** Los datos se preparan en `$context` y se carga la plantilla `DevTools.template.php` para mostrar la información al usuario.
+
+## 5. Flujo de Trabajo Esperado (Workflow)
+
+El flujo de trabajo típico para un desarrollador que utiliza estas herramientas es el siguiente:
+
+1.  **Inicialización:**
+    *   El desarrollador crea una carpeta para su mod dentro del directorio `Packages/` (por ejemplo, `Packages/mi-mod/`).
+    *   Dentro de esta carpeta, coloca el archivo `package-info.xml` y la estructura de archivos del mod.
+
+2.  **Desarrollo y Sincronización (Iterativo):**
+    *   **Sync In:** Desde el panel de DevTools (`index.php?action=devtools;area=packages`), se usa la opción **"Sync In"** para copiar los archivos desde la carpeta del paquete hacia los directorios de la instalación activa de SMF (`Sources/`, `Themes/`, etc.). Esto permite probar los archivos en el entorno real.
+    *   **Gestión de Hooks:** Si se edita el `package-info.xml` para añadir o modificar hooks, se utiliza la opción **"Reinstall Hooks"**. Esto aplica los cambios en la base de datos sin necesidad de desinstalar y reinstalar todo el paquete manualmente.
+    *   **Sync Out (Opcional):** Si el desarrollador realiza cambios o correcciones directamente en los archivos de la instalación de SMF (por ejemplo, mientras depura un error en `Sources/Subs.php`), utiliza **"Sync Out"** para copiar esos cambios de vuelta a su carpeta de paquete (`Packages/mi-mod/`). Esto asegura que el código fuente del mod se mantenga actualizado con las correcciones realizadas en vivo.
+
+3.  **Empaquetado y Distribución:**
+    *   Una vez que el desarrollo es estable, el desarrollador navega a la pestaña **"Files"**.
+    *   Selecciona el formato deseado (`zip` o `tgz`) para generar el archivo comprimido.
+    *   La herramienta genera el paquete listo para distribuir, excluyendo automáticamente archivos de desarrollo (como `.git`, `.github`) definidos en la sección `<devtools><exclusion>` del `package-info.xml`.
