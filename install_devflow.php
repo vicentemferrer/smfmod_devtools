@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Migration Manager - Installation Script
- * This file installs the database table and hooks required for the Migration Manager mod.
+ * DevFlow - Installation Script
+ * This file installs the database table and hooks required for the DevFlow mod.
  * Run this once via CLI or browser.
  */
 
@@ -15,10 +15,10 @@ elseif (!defined('SMF'))
 // Database operations require smcFunc
 global $smcFunc, $db_prefix;
 
-echo 'Installing Migration Manager...<br>';
+echo 'Installing DevFlow...<br>';
 
 // 1. Create the migrations log table
-$tableName = '{db_prefix}migrations_log';
+$tableName = '{db_prefix}devflow_log';
 
 $columns = [
     [
@@ -59,11 +59,8 @@ echo 'Done.<br>';
 echo 'Adding hooks... ';
 
 $hooks = [
-    'integrate_admin_areas' => 'SMF\\Mods\\MigrationManager\\Integration::hook_admin_areas',
-    // We might need a pre_load hook to register the autoloader if we don't put it in the admin hook file directly
-    // But since Integration.php is loaded by SMF when hook_admin_areas is triggered, we can handle autoloading there or add another hook.
-    // For robustness, let's add a pre_include hook to ensure our autoloader is available early if needed.
-    // 'integrate_pre_include' => '$sourcedir/MigrationManager/Integration.php', // This ensures the file is included
+    'integrate_admin_areas' => 'SMF\\Mods\\DevFlow\\Integration::hook_admin_areas',
+    'integrate_pre_include' => '$sourcedir/DevFlow/Integration.php', // Ensure autoloader is available
 ];
 
 foreach ($hooks as $hook => $function) {
@@ -72,8 +69,18 @@ foreach ($hooks as $hook => $function) {
 
 echo 'Done.<br>';
 
-// 3. Optional: Insert initial migration record if needed? No, let's start clean.
+// 3. Create migrations directory
+$migrationsDir = dirname(__FILE__) . '/devflow_migrations';
+if (!is_dir($migrationsDir)) {
+    echo 'Creating migrations directory... ';
+    if (mkdir($migrationsDir, 0755, true)) {
+        file_put_contents($migrationsDir . '/.htaccess', 'Deny from all');
+        echo 'Done.<br>';
+    } else {
+        echo 'Failed (Check permissions).<br>';
+    }
+}
 
 echo '<b>Installation Complete!</b><br>';
-echo 'You can now access the Migration Manager in the Admin Panel > Maintenance > Migrations.<br>';
+echo 'You can now access DevFlow in the Admin Panel > Maintenance > DevFlow.<br>';
 echo 'Please delete this file for security.';

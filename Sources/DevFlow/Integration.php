@@ -1,6 +1,6 @@
 <?php
 
-namespace SMF\Mods\MigrationManager;
+namespace SMF\Mods\DevFlow;
 
 /**
  * Class Integration
@@ -10,7 +10,7 @@ class Integration
 {
     /**
      * Hook: integrate_admin_areas
-     * Adds the 'Migrations' area to the admin panel.
+     * Adds the 'DevFlow' area to the admin panel.
      *
      * @param array $admin_areas
      */
@@ -19,31 +19,28 @@ class Integration
         global $txt;
 
         // Load our language file
-        loadLanguage('MigrationManager');
+        loadLanguage('DevFlow');
 
-        // Add 'migrations' to the 'maintenance' section
-        $admin_areas['maintenance']['areas']['migrations'] = [
-            'label' => $txt['mm_migrations_title'],
+        // Add 'devflow' to the 'maintenance' section
+        $admin_areas['maintenance']['areas']['devflow'] = [
+            'label' => $txt['df_title'],
             'function' => [Controller::class, 'main'],
             'icon' => 'server.png', // Standard SMF icon
             'permission' => ['admin_forum'],
             'subsections' => [
-                'list' => [$txt['mm_list_migrations']],
+                'list' => [$txt['df_list_migrations']],
             ],
         ];
     }
 
     /**
-     * Simple autoloader for the Migration Manager namespace.
-     * Can be called early in the request lifecycle if needed (e.g. integrate_pre_include)
-     * But since we are only using it in admin, SMF will load this file when the hook is called,
-     * so we can register the autoloader inside the hook function or rely on manual require in Controller.
-     * For robustness, let's provide a static register method.
+     * Simple autoloader for the DevFlow namespace.
+     * Can be called manually or registered via hook.
      */
     public static function registerAutoloader()
     {
         spl_autoload_register(function ($class) {
-            $prefix = 'SMF\\Mods\\MigrationManager\\';
+            $prefix = 'SMF\\Mods\\DevFlow\\';
             $base_dir = __DIR__ . '/';
 
             // Does the class use the namespace prefix?

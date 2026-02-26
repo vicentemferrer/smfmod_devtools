@@ -1,26 +1,26 @@
 <?php
 
 /**
- * Migration Manager Template
+ * DevFlow Template
  */
 
-function template_migration_list()
+function template_devflow_list()
 {
     global $context, $txt, $scripturl;
 
     echo '
     <div id="admin_content">
         <div class="cat_bar">
-            <h3 class="catbg">', $txt['mm_migrations_title'], '</h3>
+            <h3 class="catbg">', $txt['df_title'], '</h3>
         </div>';
 
-    if (!empty($context['mm_success']))
+    if (!empty($context['df_success']))
         echo '
-        <div class="infobox">', $context['mm_success'], '</div>';
+        <div class="infobox">', $context['df_success'], '</div>';
 
-    if (!empty($context['mm_error']))
+    if (!empty($context['df_error']))
         echo '
-        <div class="errorbox">', $context['mm_error'], '</div>';
+        <div class="errorbox">', $context['df_error'], '</div>';
 
     echo '
         <div class="windowbg">
@@ -28,9 +28,9 @@ function template_migration_list()
                 <table class="table_grid">
                     <thead>
                         <tr class="title_bar">
-                            <th scope="col" class="lefttext">', $txt['mm_version'], '</th>
-                            <th scope="col" class="lefttext">', $txt['mm_status'], '</th>
-                            <th scope="col" class="centertext">', $txt['mm_actions'], '</th>
+                            <th scope="col" class="lefttext">', $txt['df_version'], '</th>
+                            <th scope="col" class="lefttext">', $txt['df_status'], '</th>
+                            <th scope="col" class="centertext">', $txt['df_actions'], '</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -39,7 +39,7 @@ function template_migration_list()
     {
         echo '
                         <tr>
-                            <td colspan="3" class="centertext">', $txt['mm_no_migrations'], '</td>
+                            <td colspan="3" class="centertext">', $txt['df_no_migrations'], '</td>
                         </tr>';
     }
     else
@@ -51,13 +51,13 @@ function template_migration_list()
 
             if ($migration['status'] == 'applied') {
                 $status_class = 'success';
-                $status_text = $txt['mm_status_applied'];
+                $status_text = $txt['df_status_applied'];
             } elseif ($migration['status'] == 'pending') {
                 $status_class = 'warn';
-                $status_text = $txt['mm_status_pending'];
+                $status_text = $txt['df_status_pending'];
             } else {
                 $status_class = 'error';
-                $status_text = $txt['mm_status_missing'];
+                $status_text = $txt['df_status_missing'];
             }
 
             echo '
@@ -68,10 +68,10 @@ function template_migration_list()
 
             if ($migration['status'] == 'pending') {
                 echo '
-                                <a href="', $scripturl, '?action=admin;area=migrations;sa=apply;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['mm_apply'], '</a>';
+                                <a href="', $scripturl, '?action=admin;area=devflow;sa=apply;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['df_apply'], '</a>';
             } elseif ($migration['status'] == 'applied') {
                 echo '
-                                <a href="', $scripturl, '?action=admin;area=migrations;sa=revert;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['mm_revert'], '</a>';
+                                <a href="', $scripturl, '?action=admin;area=devflow;sa=revert;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['df_revert'], '</a>';
             }
 
             echo '

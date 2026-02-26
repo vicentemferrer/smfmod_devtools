@@ -1,14 +1,13 @@
 <?php
 
-namespace SMF\Mods\MigrationManager;
+namespace SMF\Mods\DevFlow;
 
-use SMF\Mods\MigrationManager\Services\Discoverer;
-use SMF\Mods\MigrationManager\Services\Runner;
-use SMF\Mods\MigrationManager\DbLogger;
+use SMF\Mods\DevFlow\Services\Discoverer;
+use SMF\Mods\DevFlow\Services\Runner;
 
 /**
  * Class Controller
- * Main controller for the Migration Manager admin page.
+ * Main controller for the DevFlow admin page.
  */
 class Controller
 {
@@ -23,16 +22,25 @@ class Controller
         isAllowedTo('admin_forum');
 
         // Load necessary files
-        loadTemplate('MigrationManager');
-        loadLanguage('MigrationManager');
+        loadTemplate('DevFlow');
+        loadLanguage('DevFlow');
 
         // Initialize components
         $logger = new DbLogger();
-        $logger->ensureTableExists(); // Ensure table exists on first run
 
-        $migrations_dir = $boarddir . '/migrations';
+        $migrations_dir = $boarddir . '/devflow_migrations';
+
+        // Ensure directory exists
+        if (!is_dir($migrations_dir)) {
+            if (!mkdir($migrations_dir, 0755, true)) {
+                 $context['df_error'] = sprintf($txt['df_dir_error'], $migrations_dir);
+            } else {
+                 // Secure it
+                 file_put_contents($migrations_dir . '/.htaccess', 'Deny from all');
+            }
+        }
+
         $discoverer = new Discoverer($migrations_dir);
-
         $runner = new Runner($logger);
 
         // Routing
@@ -46,12 +54,12 @@ class Controller
             if (file_exists($file)) {
                 try {
                     $runner->up($file, $version);
-                    $context['mm_success'] = sprintf($txt['mm_applied_success'], $version);
+                    $context['df_success'] = sprintf($txt['df_applied_success'], $version);
                 } catch (\Exception $e) {
-                    $context['mm_error'] = $e->getMessage();
+                    $context['df_error'] = $e->getMessage();
                 }
             } else {
-                $context['mm_error'] = $txt['mm_file_not_found'];
+                $context['df_error'] = $txt['df_file_not_found'];
             }
             // Refresh list
             $sa = 'list';
@@ -63,22 +71,20 @@ class Controller
             if (file_exists($file)) {
                 try {
                     $runner->down($file, $version);
-                    $context['mm_success'] = sprintf($txt['mm_reverted_success'], $version);
+                    $context['df_success'] = sprintf($txt['df_reverted_success'], $version);
                 } catch (\Exception $e) {
-                    $context['mm_error'] = $e->getMessage();
+                    $context['df_error'] = $e->getMessage();
                 }
             } else {
-                // If file is missing but log exists, we can force remove from log?
-                // For now, error.
-                $context['mm_error'] = $txt['mm_file_not_found'];
+                $context['df_error'] = $txt['df_file_not_found'];
             }
             $sa = 'list';
         }
 
         // Default action: List
         if ($sa === 'list') {
-            $context['page_title'] = $txt['mm_migrations_title'];
-            $context['sub_template'] = 'migration_list';
+            $context['page_title'] = $txt['df_title'];
+            $context['sub_template'] = 'devflow_list';
 
             // Get all files
             $files = $discoverer->getMigrations();

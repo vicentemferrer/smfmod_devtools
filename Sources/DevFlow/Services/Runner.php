@@ -1,13 +1,14 @@
 <?php
 
-namespace SMF\Mods\MigrationManager\Services;
+namespace SMF\Mods\DevFlow\Services;
 
-use SMF\Mods\MigrationManager\AbstractMigration;
-use SMF\Mods\MigrationManager\DbLogger;
+use SMF\Mods\DevFlow\AbstractMigration;
+use SMF\Mods\DevFlow\DbLogger;
+use SMF\Mods\DevFlow\Handlers\DirectHandler;
 
 /**
  * Class Runner
- * Executes migrations safely.
+ * Executes migrations safely using the DirectHandler.
  */
 class Runner
 {
@@ -15,11 +16,6 @@ class Runner
      * @var DbLogger
      */
     protected $logger;
-
-    /**
-     * @var array List of loaded migration classes.
-     */
-    protected $loaded_classes = [];
 
     /**
      * Constructor.
@@ -76,6 +72,7 @@ class Runner
 
     /**
      * Loads the migration file and instantiates the class.
+     * Injects the DirectHandler for immediate execution.
      *
      * @param string $file
      * @param string $className
@@ -97,12 +94,11 @@ class Runner
         $migration = new $className();
 
         if (!($migration instanceof AbstractMigration)) {
-            // For now, check if it has the required methods, since user migrations
-            // might not extend our namespaced class directly if they are old style,
-            // but ideally they should.
-            // Let's enforce inheritance for safety.
-            throw new \Exception('Migration class ' . $className . ' must extend SMF\Mods\MigrationManager\AbstractMigration');
+            throw new \Exception('Migration class ' . $className . ' must extend SMF\Mods\DevFlow\AbstractMigration');
         }
+
+        // INJECT DIRECT HANDLER
+        $migration->setHandler(new DirectHandler());
 
         return $migration;
     }

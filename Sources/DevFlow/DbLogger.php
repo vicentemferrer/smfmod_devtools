@@ -1,6 +1,6 @@
 <?php
 
-namespace SMF\Mods\MigrationManager;
+namespace SMF\Mods\DevFlow;
 
 /**
  * Class DbLogger
@@ -11,7 +11,7 @@ class DbLogger
     /**
      * @var string The table name for storing migration logs.
      */
-    protected $table_name = '{db_prefix}migrations_log';
+    protected $table_name = '{db_prefix}devflow_log';
 
     /**
      * Ensures the migration log table exists.
@@ -63,12 +63,12 @@ class DbLogger
     {
         global $smcFunc;
 
-        // Ensure table exists before querying
+        // Ensure table exists before querying (Lazy Init)
         $this->ensureTableExists();
 
         $request = $smcFunc['db_query']('', '
             SELECT version
-            FROM {db_prefix}migrations_log',
+            FROM {db_prefix}devflow_log',
             []
         );
 
@@ -108,7 +108,7 @@ class DbLogger
         global $smcFunc;
 
         $smcFunc['db_query']('', '
-            DELETE FROM {db_prefix}migrations_log
+            DELETE FROM {db_prefix}devflow_log
             WHERE version = {string:version}',
             [
                 'version' => $version,

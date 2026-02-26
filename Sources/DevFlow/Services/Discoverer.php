@@ -1,6 +1,6 @@
 <?php
 
-namespace SMF\Mods\MigrationManager\Services;
+namespace SMF\Mods\DevFlow\Services;
 
 /**
  * Class Discoverer
