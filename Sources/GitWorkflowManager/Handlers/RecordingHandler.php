@@ -1,8 +1,8 @@
 <?php
 
-namespace SMF\Mods\DevFlow\Handlers;
+namespace SMF\Mods\GitWorkflowManager\Handlers;
 
-use SMF\Mods\DevFlow\MigrationHandlerInterface;
+use SMF\Mods\GitWorkflowManager\MigrationHandlerInterface;
 
 /**
  * Class RecordingHandler

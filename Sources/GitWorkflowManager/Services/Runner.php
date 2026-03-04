@@ -1,10 +1,10 @@
 <?php
 
-namespace SMF\Mods\DevFlow\Services;
+namespace SMF\Mods\GitWorkflowManager\Services;
 
-use SMF\Mods\DevFlow\AbstractMigration;
-use SMF\Mods\DevFlow\DbLogger;
-use SMF\Mods\DevFlow\Handlers\DirectHandler;
+use SMF\Mods\GitWorkflowManager\AbstractMigration;
+use SMF\Mods\GitWorkflowManager\DbLogger;
+use SMF\Mods\GitWorkflowManager\Handlers\DirectHandler;
 
 /**
  * Class Runner
@@ -94,7 +94,7 @@ class Runner
         $migration = new $className();
 
         if (!($migration instanceof AbstractMigration)) {
-            throw new \Exception('Migration class ' . $className . ' must extend SMF\Mods\DevFlow\AbstractMigration');
+            throw new \Exception('Migration class ' . $className . ' must extend SMF\Mods\GitWorkflowManager\AbstractMigration');
         }
 
         // INJECT DIRECT HANDLER

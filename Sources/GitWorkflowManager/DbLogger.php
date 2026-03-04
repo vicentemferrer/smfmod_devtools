@@ -1,6 +1,6 @@
 <?php
 
-namespace SMF\Mods\DevFlow;
+namespace SMF\Mods\GitWorkflowManager;
 
 /**
  * Class DbLogger
@@ -11,7 +11,7 @@ class DbLogger
     /**
      * @var string The table name for storing migration logs.
      */
-    protected $table_name = '{db_prefix}devflow_log';
+    protected $table_name = '{db_prefix}gwm_log';
 
     /**
      * Ensures the migration log table exists.
@@ -68,7 +68,7 @@ class DbLogger
 
         $request = $smcFunc['db_query']('', '
             SELECT version
-            FROM {db_prefix}devflow_log',
+            FROM {db_prefix}gwm_log',
             []
         );
 
@@ -108,7 +108,7 @@ class DbLogger
         global $smcFunc;
 
         $smcFunc['db_query']('', '
-            DELETE FROM {db_prefix}devflow_log
+            DELETE FROM {db_prefix}gwm_log
             WHERE version = {string:version}',
             [
                 'version' => $version,

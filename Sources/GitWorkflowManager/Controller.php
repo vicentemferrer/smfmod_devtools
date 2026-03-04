@@ -1,13 +1,13 @@
 <?php
 
-namespace SMF\Mods\DevFlow;
+namespace SMF\Mods\GitWorkflowManager;
 
-use SMF\Mods\DevFlow\Services\Discoverer;
-use SMF\Mods\DevFlow\Services\Runner;
+use SMF\Mods\GitWorkflowManager\Services\Discoverer;
+use SMF\Mods\GitWorkflowManager\Services\Runner;
 
 /**
  * Class Controller
- * Main controller for the DevFlow admin page.
+ * Main controller for the Git Workflow Manager admin page.
  */
 class Controller
 {
@@ -22,18 +22,18 @@ class Controller
         isAllowedTo('admin_forum');
 
         // Load necessary files
-        loadTemplate('DevFlow');
-        loadLanguage('DevFlow');
+        loadTemplate('GitWorkflowManager');
+        loadLanguage('GitWorkflowManager');
 
         // Initialize components
         $logger = new DbLogger();
 
-        $migrations_dir = $boarddir . '/devflow_migrations';
+        $migrations_dir = $boarddir . '/gwm_migrations';
 
         // Ensure directory exists
         if (!is_dir($migrations_dir)) {
             if (!mkdir($migrations_dir, 0755, true)) {
-                 $context['df_error'] = sprintf($txt['df_dir_error'], $migrations_dir);
+                 $context['gwm_error'] = sprintf($txt['gwm_dir_error'], $migrations_dir);
             } else {
                  // Secure it
                  file_put_contents($migrations_dir . '/.htaccess', 'Deny from all');
@@ -54,12 +54,12 @@ class Controller
             if (file_exists($file)) {
                 try {
                     $runner->up($file, $version);
-                    $context['df_success'] = sprintf($txt['df_applied_success'], $version);
+                    $context['gwm_success'] = sprintf($txt['gwm_applied_success'], $version);
                 } catch (\Exception $e) {
-                    $context['df_error'] = $e->getMessage();
+                    $context['gwm_error'] = $e->getMessage();
                 }
             } else {
-                $context['df_error'] = $txt['df_file_not_found'];
+                $context['gwm_error'] = $txt['gwm_file_not_found'];
             }
             // Refresh list
             $sa = 'list';
@@ -71,20 +71,20 @@ class Controller
             if (file_exists($file)) {
                 try {
                     $runner->down($file, $version);
-                    $context['df_success'] = sprintf($txt['df_reverted_success'], $version);
+                    $context['gwm_success'] = sprintf($txt['gwm_reverted_success'], $version);
                 } catch (\Exception $e) {
-                    $context['df_error'] = $e->getMessage();
+                    $context['gwm_error'] = $e->getMessage();
                 }
             } else {
-                $context['df_error'] = $txt['df_file_not_found'];
+                $context['gwm_error'] = $txt['gwm_file_not_found'];
             }
             $sa = 'list';
         }
 
         // Default action: List
         if ($sa === 'list') {
-            $context['page_title'] = $txt['df_title'];
-            $context['sub_template'] = 'devflow_list';
+            $context['page_title'] = $txt['gwm_title'];
+            $context['sub_template'] = 'gwm_list';
 
             // Get all files
             $files = $discoverer->getMigrations();

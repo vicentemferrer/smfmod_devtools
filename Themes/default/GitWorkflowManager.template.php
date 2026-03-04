@@ -1,26 +1,26 @@
 <?php
 
 /**
- * DevFlow Template
+ * Git Workflow Manager Template
  */
 
-function template_devflow_list()
+function template_gwm_list()
 {
     global $context, $txt, $scripturl;
 
     echo '
     <div id="admin_content">
         <div class="cat_bar">
-            <h3 class="catbg">', $txt['df_title'], '</h3>
+            <h3 class="catbg">', $txt['gwm_title'], '</h3>
         </div>';
 
-    if (!empty($context['df_success']))
+    if (!empty($context['gwm_success']))
         echo '
-        <div class="infobox">', $context['df_success'], '</div>';
+        <div class="infobox">', $context['gwm_success'], '</div>';
 
-    if (!empty($context['df_error']))
+    if (!empty($context['gwm_error']))
         echo '
-        <div class="errorbox">', $context['df_error'], '</div>';
+        <div class="errorbox">', $context['gwm_error'], '</div>';
 
     echo '
         <div class="windowbg">
@@ -28,9 +28,9 @@ function template_devflow_list()
                 <table class="table_grid">
                     <thead>
                         <tr class="title_bar">
-                            <th scope="col" class="lefttext">', $txt['df_version'], '</th>
-                            <th scope="col" class="lefttext">', $txt['df_status'], '</th>
-                            <th scope="col" class="centertext">', $txt['df_actions'], '</th>
+                            <th scope="col" class="lefttext">', $txt['gwm_version'], '</th>
+                            <th scope="col" class="lefttext">', $txt['gwm_status'], '</th>
+                            <th scope="col" class="centertext">', $txt['gwm_actions'], '</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -39,7 +39,7 @@ function template_devflow_list()
     {
         echo '
                         <tr>
-                            <td colspan="3" class="centertext">', $txt['df_no_migrations'], '</td>
+                            <td colspan="3" class="centertext">', $txt['gwm_no_migrations'], '</td>
                         </tr>';
     }
     else
@@ -51,13 +51,13 @@ function template_devflow_list()
 
             if ($migration['status'] == 'applied') {
                 $status_class = 'success';
-                $status_text = $txt['df_status_applied'];
+                $status_text = $txt['gwm_status_applied'];
             } elseif ($migration['status'] == 'pending') {
                 $status_class = 'warn';
-                $status_text = $txt['df_status_pending'];
+                $status_text = $txt['gwm_status_pending'];
             } else {
                 $status_class = 'error';
-                $status_text = $txt['df_status_missing'];
+                $status_text = $txt['gwm_status_missing'];
             }
 
             echo '
@@ -68,10 +68,10 @@ function template_devflow_list()
 
             if ($migration['status'] == 'pending') {
                 echo '
-                                <a href="', $scripturl, '?action=admin;area=devflow;sa=apply;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['df_apply'], '</a>';
+                                <a href="', $scripturl, '?action=admin;area=gwm;sa=apply;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['gwm_apply'], '</a>';
             } elseif ($migration['status'] == 'applied') {
                 echo '
-                                <a href="', $scripturl, '?action=admin;area=devflow;sa=revert;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['df_revert'], '</a>';
+                                <a href="', $scripturl, '?action=admin;area=gwm;sa=revert;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['gwm_revert'], '</a>';
             }
 
             echo '

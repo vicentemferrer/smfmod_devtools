@@ -1,9 +1,9 @@
 <?php
 
-namespace SMF\Mods\DevFlow\Services;
+namespace SMF\Mods\GitWorkflowManager\Services;
 
-use SMF\Mods\DevFlow\AbstractMigration;
-use SMF\Mods\DevFlow\Handlers\RecordingHandler;
+use SMF\Mods\GitWorkflowManager\AbstractMigration;
+use SMF\Mods\GitWorkflowManager\Handlers\RecordingHandler;
 
 /**
  * Class PackageGenerator
@@ -17,7 +17,7 @@ class PackageGenerator
     public function __construct()
     {
         global $boarddir;
-        $this->tempDir = $boarddir . '/Packages/temp_devflow_' . time();
+        $this->tempDir = $boarddir . '/Packages/temp_gwm_' . time();
     }
 
     public function generate($file, $className)
@@ -105,7 +105,7 @@ class PackageGenerator
         $xml .= '<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">' . "\n";
         $xml .= '<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">' . "\n";
 
-        $xml .= "\t<id>DevFlow:" . $name . "</id>\n";
+        $xml .= "\t<id>GitWorkflowManager:" . $name . "</id>\n";
         $xml .= "\t<name>" . $name . "</name>\n";
         $xml .= "\t<version>1.0</version>\n";
         $xml .= "\t<type>modification</type>\n";
@@ -122,20 +122,10 @@ class PackageGenerator
         // Uninstall Section
         $xml .= "\t<uninstall>\n";
         foreach ($uninstall->getHooks() as $hook) {
-             // In uninstall, we typically reverse hooks.
-             // SMF <uninstall> block executes things.
-             // If we recorded a 'removeHook' in down(), we want to execute a remove.
-             // But SMF XML usually uses reverse="true" on <install> block logic for uninstalls.
-             // However, since we have explicit down() logic, we can just list the hooks to be removed/added explicitly.
-             // If down() says "removeHook", we output a hook tag with reverse="true" or just rely on the fact that removing a hook is an action.
-             // Wait, standard SMF XML <hook> adds. <hook reverse="true"> removes.
-             // If down() calls removeHook, we should output <hook reverse="true">.
-
              if ($hook['type'] === 'remove') {
                  $xml .= sprintf("\t\t<hook hook=\"%s\" function=\"%s\" file=\"%s\" object=\"%s\" reverse=\"true\" />\n",
                     $hook['hook'], $hook['function'], $hook['file'], $hook['object'] ? 'true' : 'false');
              } else {
-                 // If down() adds a hook (weird but possible), standard tag.
                  $xml .= sprintf("\t\t<hook hook=\"%s\" function=\"%s\" file=\"%s\" object=\"%s\" />\n",
                     $hook['hook'], $hook['function'], $hook['file'], $hook['object'] ? 'true' : 'false');
              }

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * DevFlow - Installation Script
- * This file installs the database table and hooks required for the DevFlow mod.
+ * Git Workflow Manager - Installation Script
+ * This file installs the database table and hooks required for the GWM mod.
  * Run this once via CLI or browser.
  */
 
@@ -15,10 +15,10 @@ elseif (!defined('SMF'))
 // Database operations require smcFunc
 global $smcFunc, $db_prefix;
 
-echo 'Installing DevFlow...<br>';
+echo 'Installing Git Workflow Manager...<br>';
 
 // 1. Create the migrations log table
-$tableName = '{db_prefix}devflow_log';
+$tableName = '{db_prefix}gwm_log';
 
 $columns = [
     [
@@ -59,8 +59,8 @@ echo 'Done.<br>';
 echo 'Adding hooks... ';
 
 $hooks = [
-    'integrate_admin_areas' => 'SMF\\Mods\\DevFlow\\Integration::hook_admin_areas',
-    'integrate_pre_include' => '$sourcedir/DevFlow/Integration.php', // Ensure autoloader is available
+    'integrate_admin_areas' => 'SMF\\Mods\\GitWorkflowManager\\Integration::hook_admin_areas',
+    'integrate_pre_include' => '$sourcedir/GitWorkflowManager/Integration.php', // Ensure autoloader is available
 ];
 
 foreach ($hooks as $hook => $function) {
@@ -70,7 +70,7 @@ foreach ($hooks as $hook => $function) {
 echo 'Done.<br>';
 
 // 3. Create migrations directory
-$migrationsDir = dirname(__FILE__) . '/devflow_migrations';
+$migrationsDir = dirname(__FILE__) . '/gwm_migrations';
 if (!is_dir($migrationsDir)) {
     echo 'Creating migrations directory... ';
     if (mkdir($migrationsDir, 0755, true)) {
@@ -82,5 +82,5 @@ if (!is_dir($migrationsDir)) {
 }
 
 echo '<b>Installation Complete!</b><br>';
-echo 'You can now access DevFlow in the Admin Panel > Maintenance > DevFlow.<br>';
+echo 'You can now access Git Workflow Manager in the Admin Panel > Maintenance > Git Workflow Manager.<br>';
 echo 'Please delete this file for security.';

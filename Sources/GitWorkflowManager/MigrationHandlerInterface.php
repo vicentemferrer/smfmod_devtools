@@ -1,6 +1,6 @@
 <?php
 
-namespace SMF\Mods\DevFlow;
+namespace SMF\Mods\GitWorkflowManager;
 
 /**
  * Interface MigrationHandlerInterface
