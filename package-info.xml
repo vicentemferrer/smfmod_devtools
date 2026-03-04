@@ -1,78 +1,48 @@
+<?xml version="1.0"?>
 <!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-	<id>sleepy:devtools</id>
-	<name>Developer Tools</name>
-	<version>1.1.3</version>
-	<type>modification</type>
+    <id>SMFMods:GitWorkflowManager</id>
+    <name>Git Workflow Manager</name>
+    <version>1.0</version>
+    <type>modification</type>
 
-	<upgrade from="1.1-1.1.2" for="2.1.*">
-		<require-file name="DevTools.php" destination="$sourcedir" />
-		<require-file name="DevTools/DevTools-File.php" destination="$sourcedir/DevTools" />
-		<require-file name="DevTools/DevTools-Hooks.php" destination="$sourcedir/DevTools" />
-		<require-file name="DevTools/DevTools-Packages.php" destination="$sourcedir/DevTools" />
-		<require-file name="languages/DevTools.russian.php" destination="$themes_dir/default/languages" />
-	</upgrade>
+    <install for="SMF 2.1.*">
+        <readme>README.md</readme>
 
-	<upgrade from="1.0.*" for="2.1.*">
-		<require-file name="DevTools.php" destination="$sourcedir" />
-		<require-dir name="DevTools" destination="$sourcedir" />
-		<remove-file name="$sourcedir/DevTools-Packages.php" error="skip" />
-		<remove-file name="$sourcedir/DevTools-Hooks.php" error="skip" />
+        <!-- Archivos Core -->
+        <require-dir name="Sources/GitWorkflowManager" destination="$sourcedir" />
 
-		<require-file name="DevTools.template.php" destination="$themedir" />
-		<require-file name="DevTools.js" destination="$themes_dir/default/scripts" />
+        <!-- Plantillas -->
+        <require-file name="Themes/default/GitWorkflowManager.template.php" destination="$themedir" />
 
-		<require-file name="languages/DevTools.english.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.spanish_es.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.spanish_latin.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.russian.php" destination="$themes_dir/default/languages" />
-	</upgrade>
+        <!-- Idiomas -->
+        <require-file name="languages/GitWorkflowManager.english.php" destination="$themes_dir/default/languages" />
+        <require-file name="languages/GitWorkflowManager.spanish_latin.php" destination="$themes_dir/default/languages" />
 
-	<install for="SMF 2.1.*">
-		<readme>README.txt</readme>
-		<require-file name="DevTools.php" destination="$sourcedir" />
-		<require-dir name="DevTools" destination="$sourcedir" />
+        <!-- Directorio de Migraciones (con .htaccess) -->
+        <require-dir name="gwm_migrations" destination="$boarddir" />
 
-		<require-file name="DevTools.template.php" destination="$themedir" />
-		<require-file name="DevTools.js" destination="$themes_dir/default/scripts" />
+        <!-- Base de Datos (Creación de gwm_log) -->
+        <code>database.php</code>
 
-		<require-file name="languages/DevTools.english.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.spanish_es.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.spanish_latin.php" destination="$themes_dir/default/languages" />
-		<require-file name="languages/DevTools.russian.php" destination="$themes_dir/default/languages" />
+        <!-- Registro de Hooks -->
+        <hook hook="integrate_pre_include" function="$sourcedir/GitWorkflowManager/Integration.php" />
+        <hook hook="integrate_admin_areas" function="SMF\Mods\GitWorkflowManager\Integration::hook_admin_areas" />
+    </install>
 
-		<hook hook="integrate_actions" function="DevTools::hook_actions" file="$sourcedir/DevTools.php" object="true" />
-		<hook hook="integrate_current_action" function="DevTools::hook_current_action" file="$sourcedir/DevTools.php" object="true" />
-		<hook hook="integrate_validateSession" function="DevTools::hook_validateSession" file="$sourcedir/DevTools.php" object="true" />
-		<hook hook="integrate_redirect" function="DevTools::hook_redirect" file="$sourcedir/DevTools.php" object="true" />
-		<hook hook="integrate_load_theme" function="DevTools::hook_load_theme" file="$sourcedir/DevTools.php" object="true" />
-	</install>
+    <uninstall for="SMF 2.1.*">
+        <!-- Eliminamos los hooks nativamente con reverse="true" -->
+        <hook reverse="true" hook="integrate_pre_include" function="$sourcedir/GitWorkflowManager/Integration.php" />
+        <hook reverse="true" hook="integrate_admin_areas" function="SMF\Mods\GitWorkflowManager\Integration::hook_admin_areas" />
 
-	<uninstall for="SMF 2.1.*">
-		<hook reverse="true" hook="integrate_current_action" function="DevTools::hook_current_action" file="$sourcedir/DevTools.php" object="true" />
-		<hook reverse="true" hook="integrate_actions" function="DevTools::main_action" file="$sourcedir/DevTools.php" object="true" />
-		<hook reverse="true" hook="integrate_validateSession" function="DevTools::hook_validateSession" file="$sourcedir/DevTools.php" object="true" />
-		<hook reverse="true" hook="integrate_redirect" function="ErrorPoDevToolspup::hook_redirect" file="$sourcedir/DevTools.php" object="true" />
-		<hook reverse="true" hook="integrate_load_theme" function="DevTools::hook_load_theme" file="$sourcedir/DevTools.php" object="true" />
+        <!-- Eliminación de Archivos Core -->
+        <remove-dir name="$sourcedir/GitWorkflowManager" />
 
-		<remove-file name="$themes_dir/default/languages/DevTools.english.php" />
-		<remove-file name="$themes_dir/default/languages/DevTools.spanish_es.php" />
-		<remove-file name="$themes_dir/default/languages/DevTools.spanish_latin.php" />
-		<remove-file name="$themes_dir/default/languages/DevTools.russian.php" />
+        <!-- Eliminación de Plantillas e Idiomas -->
+        <remove-file name="$themedir/GitWorkflowManager.template.php" />
+        <remove-file name="$themes_dir/default/languages/GitWorkflowManager.english.php" />
+        <remove-file name="$themes_dir/default/languages/GitWorkflowManager.spanish_latin.php" />
 
-		<remove-file name="$themedir/DevTools.template.php" />
-		<remove-file name="$themes_dir/default/scripts/DevTools.js" />
-
-		<remove-file name="$sourcedir/DevTools.php" />
-		<remove-dir name="$sourcedir/DevTools" />
-	</uninstall>
-
-	<devtools>
-		<packagename>{CUSTOMIZATION-NAME}_{VERSION}</packagename>
-		<exclusion>.git</exclusion>
-		<exclusion>.github</exclusion>
-		<exclusion>.scrutinizer.yml</exclusion>
-		<exclusion>screenshots</exclusion>
-		<exclusion>SECURITY.md</exclusion>
-	</devtools>
+        <!-- No eliminamos el directorio gwm_migrations al desinstalar, el usuario podría perder sus migraciones si desinstala por error. -->
+    </uninstall>
 </package-info>
