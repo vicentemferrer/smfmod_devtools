@@ -4,6 +4,7 @@ namespace SMF\Mods\GitWorkflowManager;
 
 use SMF\Mods\GitWorkflowManager\Services\Discoverer;
 use SMF\Mods\GitWorkflowManager\Services\Runner;
+use SMF\Mods\GitWorkflowManager\Services\PackageGenerator;
 
 /**
  * Class Controller
@@ -57,6 +58,40 @@ class Controller
                     $context['gwm_success'] = sprintf($txt['gwm_applied_success'], $version);
                 } catch (\Exception $e) {
                     $context['gwm_error'] = $e->getMessage();
+                }
+            } else {
+                $context['gwm_error'] = $txt['gwm_file_not_found'];
+            }
+            $sa = 'list';
+        } elseif ($sa === 'package') {
+            checkSession('get');
+            $version = $_REQUEST['version'] ?? '';
+            $file = $migrations_dir . '/' . $version . '.php';
+
+            if (file_exists($file)) {
+                try {
+                    $generator = new PackageGenerator();
+                    $zipPath = $generator->generate($file, $version);
+
+                    // Trigger download
+                    if (file_exists($zipPath)) {
+                        header('Content-Description: File Transfer');
+                        header('Content-Type: application/zip');
+                        header('Content-Disposition: attachment; filename="' . basename($zipPath) . '"');
+                        header('Expires: 0');
+                        header('Cache-Control: must-revalidate');
+                        header('Pragma: public');
+                        header('Content-Length: ' . filesize($zipPath));
+                        readfile($zipPath);
+
+                        // Clean up zip after download
+                        unlink($zipPath);
+                        exit; // Stop execution to prevent HTML output
+                    } else {
+                        $context['gwm_error'] = sprintf($txt['gwm_package_error'], 'Zip file not found after generation.');
+                    }
+                } catch (\Exception $e) {
+                    $context['gwm_error'] = sprintf($txt['gwm_package_error'], $e->getMessage());
                 }
             } else {
                 $context['gwm_error'] = $txt['gwm_file_not_found'];

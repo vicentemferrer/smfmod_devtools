@@ -74,6 +74,12 @@ function template_gwm_list()
                                 <a href="', $scripturl, '?action=admin;area=gwm;sa=revert;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['gwm_revert'], '</a>';
             }
 
+            // El botón de empaquetar siempre está disponible (asumiendo que el archivo físico existe)
+            if ($migration['status'] != 'missing') {
+                echo '
+                                <a href="', $scripturl, '?action=admin;area=gwm;sa=package;version=', $migration['version'], ';', $context['session_var'], '=', $context['session_id'], '" class="button">', $txt['gwm_package'], '</a>';
+            }
+
             echo '
                             </td>
                         </tr>';

@@ -15,3 +15,6 @@ $txt['gwm_applied_success'] = 'Se aplicó %s correctamente.';
 $txt['gwm_reverted_success'] = 'Se revirtió %s correctamente.';
 $txt['gwm_file_not_found'] = 'No se encontró el archivo de migración.';
 $txt['gwm_dir_error'] = 'No se pudo crear el directorio de migraciones: %s';
+$txt['gwm_package'] = 'Empaquetar';
+$txt['gwm_package_success'] = 'Paquete %s generado exitosamente.';
+$txt['gwm_package_error'] = 'Error al generar el paquete: %s';
