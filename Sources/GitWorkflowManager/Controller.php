@@ -128,13 +128,18 @@ class Controller
 
             // Merge data
             $context['migrations'] = [];
+            $packages_dir = $boarddir . '/Packages';
 
             // First, add all files
             foreach ($files as $version => $info) {
                 $is_applied = in_array($version, $applied);
+                $zip_path = $packages_dir . '/' . $version . '.zip';
+                $is_packaged = file_exists($zip_path);
+
                 $context['migrations'][$version] = [
                     'version' => $version,
                     'status' => $is_applied ? 'applied' : 'pending',
+                    'is_packaged' => $is_packaged,
                     'file' => $info['file'],
                     'timestamp' => $info['timestamp'],
                 ];
@@ -143,9 +148,11 @@ class Controller
             // Check for orphaned logs (in DB but not file)
             foreach ($applied as $version) {
                 if (!isset($context['migrations'][$version])) {
+                    $zip_path = $packages_dir . '/' . $version . '.zip';
                     $context['migrations'][$version] = [
                         'version' => $version,
                         'status' => 'missing',
+                        'is_packaged' => file_exists($zip_path),
                         'file' => '',
                         'timestamp' => 0,
                     ];
